@@ -2,6 +2,20 @@ from RestrictedPython import compile_restricted, PrintCollector, Guards
 import sys
 import qtmium
 
+def safe_qtmium():
+    return dict(
+                Box = qtmium.Box, 
+                Cone = qtmium.Cone, 
+                Cylinder = qtmium.Cylinder, 
+                Sphere = qtmium.Sphere, 
+                Text = qtmium.Text, 
+                Torus = qtmium.Torus, 
+                Wedge = qtmium.Wedge, 
+                X_axis = qtmium.X_axis, 
+                Y_axis = qtmium.Y_axis, 
+                Z_axis = qtmium.Z_axis
+                )
+
 def safeEvaluate(src, stdout=sys.__stdout__, stderr=sys.__stderr__):
     """
     function allowing the safe evaluation of untrusted python code
@@ -20,8 +34,9 @@ def safeEvaluate(src, stdout=sys.__stdout__, stderr=sys.__stderr__):
         _print_ = GeneralNonCollector, 
         _getiter_ = list.__iter__ ,
         _write_ = Guards.full_write_guard, 
-        _getattr_ = getattr, 
-        qtmium = qtmium)
+        _getattr_ = getattr)
+        
+    restricted_globals = dict(restricted_globals.items() + safe_qtmium().items())
 
     code = compile_restricted( src, '<string>', 'exec')
     (ostdout, ostderr) = (sys.stdout,  sys.stderr)

@@ -46,9 +46,9 @@ A_CENTER = 3
 # Custom data type
 enum = 1
 
-_brep_cache_path_ = os.path.join(os.environ['HOME'],'.cadmium','brepcache')
+_brep_cache_path_ = os.path.join(os.environ['HOME'],'.qtmium','brepcache')
 _brep_caching_enabled_ = True
-_font_dir_ = os.path.join(os.environ['HOME'],'.cadmium','fonts')
+_font_dir_ = os.path.join(os.environ['HOME'],'.qtmium','fonts')
 _abs_fontpath_allowed_ = True
 
 if not os.path.exists(_brep_cache_path_):
@@ -67,8 +67,8 @@ def description(*arg, **kwdArg):
   if arg:
     raise Exception('Only named arguments supported')
 
-  import cadmium
-  cadmium.inspectionData['solidData'] = kwdArg
+  import qtmium
+  qtmium.inspectionData['solidData'] = kwdArg
 
   def decorator(func): return func
   return decorator
@@ -84,7 +84,7 @@ def param(*arg, **kwdArg):
   if arg:
     raise Exception('Only named arguments supported')
 
-  import cadmium
+  import qtmium
   if kwdArg.has_key('valueType'):
     if kwdArg['valueType'] == int:
       kwdArg['valueType'] = 'int'
@@ -94,17 +94,17 @@ def param(*arg, **kwdArg):
       kwdArg['valueType'] = 'str'
     elif kwdArg['valueType'] == bool:
       kwdArg['valueType'] = 'bool'
-    elif kwdArg['valueType'] == cadmium.enum:
+    elif kwdArg['valueType'] == qtmium.enum:
       kwdArg['valueType'] = 'enum'
     else:
       kwdArg['valueType'] = 'unknown'
 
-  cadmium.inspectionData['paramData'][kwdArg['name']] = kwdArg
+  qtmium.inspectionData['paramData'][kwdArg['name']] = kwdArg
 
   def decorator(func): return func
   return decorator
 
-class CadmiumException(BaseException):
+class QtmiumException(BaseException):
   '''
   Useful mainly for validating user provided input for Solid instantiations
   '''

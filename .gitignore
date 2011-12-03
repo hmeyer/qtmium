@@ -1,0 +1,4 @@
+.eric4project/
+*.e4p
+src/ui/Ui_*
+*.pyc

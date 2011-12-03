@@ -1,7 +1,7 @@
 
 import sys
 sys.path.append('../src')
-from cadmium.polyhedron import Polyhedron
+from qtmium.polyhedron import Polyhedron
 
 offname = sys.argv[1]
 stlname = sys.argv[2]

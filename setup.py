@@ -2,12 +2,12 @@
 
 from distutils.core import setup
 
-setup(name='Cadmium',
+setup(name='qtmium',
       version='0.1',
-      description='Solid modelling library',
-      author='Jayesh Salvi',
-      author_email='jayesh@3dtin.com',
-      url='http://jayesh3.github.com/cadmium/',
-      packages=['cadmium', 'cadmium.primitives'],
-      package_dir={'cadmium':'src/cadmium'}, 
+      description='Solid modelling environment',
+      author='Henning Meyer',
+      author_email='tutmann@gmail.com',
+      url='http://hmeyer.github.com/qtmium/',
+      packages=['qtmium', 'qtmium.primitives'],
+      package_dir={'qtmium':'src/qtmium'}, 
      )

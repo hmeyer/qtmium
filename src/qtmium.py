@@ -10,4 +10,5 @@ if __name__ == "__main__":
     ui = MainWindow()
     ui.show()
     ui.glWidget.InitDriver()
+    ui.setup()
     sys.exit(app.exec_())

@@ -25,6 +25,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.glWidget = qtViewer3d()
         self.splitter.addWidget(self.glWidget)
     
+    def setup(self):
+        size = self.splitter.size().width()
+        self.splitter.setSizes([size/2,  size/2])
+    
     @pyqtSignature("")
     def on_action_Compile_activated(self):
         """

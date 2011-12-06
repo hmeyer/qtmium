@@ -1,12 +1,13 @@
-#!/usr/bin/python
-
 # 
-# qtmium - Python library for Solid Modelling
+# Cadmium - Python library for Solid Modelling
+# Copyright (C) 2011 Jayesh Salvi [jayesh <at> 3dtin <dot> com]
 #
+
+#!/usr/bin/python
 
 import os
 from math import pi as math_pi
-import qtmium
+import cadmium
 import json
 
 from OCC import StlAPI
@@ -217,11 +218,11 @@ class Solid():
     self.shape = brep.Shape()
     return self
 
-  def rotate(self, axis=qtmium.Z_axis, angle=0):
+  def rotate(self, axis=cadmium.Z_axis, angle=0):
     '''
     Rotate the solid
 
-    :param axis: One of three principal axes (qtmium.X_axis, qtmium.Y_axis, qtmium.Z_Axis)
+    :param axis: One of three principal axes (cadmium.X_axis, cadmium.Y_axis, cadmium.Z_Axis)
     :param angle: in Degrees
     :type angle: float
     '''

@@ -1,5 +1,6 @@
 # 
-# qtmium - Python library for Solid Modelling
+# Cadmium - Python library for Solid Modelling
+# Copyright (C) 2011 Jayesh Salvi [jayesh <at> 3dtin <dot> com]
 #
 
 import os
@@ -15,8 +16,8 @@ from OCC.BRepBuilderAPI import \
 from OCC.BRepPrimAPI import BRepPrimAPI_MakePrism
 from OCC.BRepAlgoAPI import BRepAlgoAPI_Cut, BRepAlgoAPI_Fuse
 
-from qtmium.solid import Solid
-import qtmium
+from cadmium.solid import Solid
+import cadmium
 
 INF = math.tan(math.pi/2) # infinity
 
@@ -43,8 +44,8 @@ class Glyph(Solid):
     self.left_side_bearing = glyph.left_side_bearing
     self.right_side_bearing = glyph.right_side_bearing
 
-    if qtmium._brep_caching_enabled_:
-      breppath = os.path.join(qtmium._brep_cache_path_,
+    if cadmium._brep_caching_enabled_:
+      breppath = os.path.join(cadmium._brep_cache_path_,
         self.get_signature(char,self.font.path,thickness,center))
       if os.path.exists(breppath):
         Solid.__init__(self, None)
@@ -202,14 +203,14 @@ class Text(Solid):
   zmin = INF
 
   def load_font(self, fontpath):
-    if fontpath.find('/') >= 0 and qtmium._abs_fontpath_allowed_:
+    if fontpath.find('/') >= 0 and cadmium._abs_fontpath_allowed_:
       return fontforge.open(fontpath)
     else:
       # Lookup in fonts directory
-      if os.path.exists(qtmium._font_dir_):
-        available_fonts = os.listdir(qtmium._font_dir_)
+      if os.path.exists(cadmium._font_dir_):
+        available_fonts = os.listdir(cadmium._font_dir_)
         if fontpath in available_fonts:
-          return fontforge.open(os.path.join(qtmium._font_dir_, fontpath))
+          return fontforge.open(os.path.join(cadmium._font_dir_, fontpath))
     raise Exception('Font not found')
 
   def __init__(self, text, fontpath, thickness=1,

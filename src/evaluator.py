@@ -1,19 +1,19 @@
 from RestrictedPython import compile_restricted, PrintCollector, Guards
 import sys
-import qtmium
+import cadmium
 
-def safe_qtmium():
+def safe_cadmium():
     return dict(
-                Box = qtmium.Box, 
-                Cone = qtmium.Cone, 
-                Cylinder = qtmium.Cylinder, 
-                Sphere = qtmium.Sphere, 
-                Text = qtmium.Text, 
-                Torus = qtmium.Torus, 
-                Wedge = qtmium.Wedge, 
-                X_axis = qtmium.X_axis, 
-                Y_axis = qtmium.Y_axis, 
-                Z_axis = qtmium.Z_axis
+                Box = cadmium.Box, 
+                Cone = cadmium.Cone, 
+                Cylinder = cadmium.Cylinder, 
+                Sphere = cadmium.Sphere, 
+                Text = cadmium.Text, 
+                Torus = cadmium.Torus, 
+                Wedge = cadmium.Wedge, 
+                X_axis = cadmium.X_axis, 
+                Y_axis = cadmium.Y_axis, 
+                Z_axis = cadmium.Z_axis
                 )
 
 def safeEvaluate(src, stdout=sys.__stdout__, stderr=sys.__stderr__):
@@ -36,7 +36,7 @@ def safeEvaluate(src, stdout=sys.__stdout__, stderr=sys.__stderr__):
         _write_ = Guards.full_write_guard, 
         _getattr_ = getattr)
         
-    restricted_globals = dict(restricted_globals.items() + safe_qtmium().items())
+    restricted_globals = dict(restricted_globals.items() + safe_cadmium().items())
 
     code = compile_restricted( src, '<string>', 'exec')
     (ostdout, ostderr) = (sys.stdout,  sys.stderr)

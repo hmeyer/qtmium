@@ -14,62 +14,29 @@
    <string>compcad</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <item>
-     <widget class="QSplitter" name="splitter">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QSplitter" name="splitterV">
       <property name="orientation">
-       <enum>Qt::Horizontal</enum>
+       <enum>Qt::Vertical</enum>
       </property>
-      <widget class="QTabWidget" name="tabWidget">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
+      <widget class="QSplitter" name="splitterH">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
-       <property name="tabShape">
-        <enum>QTabWidget::Rounded</enum>
-       </property>
-       <property name="currentIndex">
-        <number>0</number>
-       </property>
-       <widget class="QWidget" name="CodeTab">
-        <attribute name="title">
-         <string>Code</string>
-        </attribute>
-        <layout class="QGridLayout" name="gridLayout">
-         <property name="margin">
-          <number>2</number>
-         </property>
-         <item row="0" column="0">
-          <widget class="QsciScintilla" name="sourceEdit">
-           <property name="toolTip">
-            <string/>
-           </property>
-           <property name="whatsThis">
-            <string/>
-           </property>
-          </widget>
-         </item>
-        </layout>
+       <widget class="QsciScintilla" name="sourceEdit">
+        <property name="toolTip">
+         <string/>
+        </property>
+        <property name="whatsThis">
+         <string/>
+        </property>
        </widget>
-       <widget class="QWidget" name="ConsoleTab">
-        <attribute name="title">
-         <string>Console</string>
-        </attribute>
-        <layout class="QGridLayout" name="gridLayout_2">
-         <property name="margin">
-          <number>2</number>
-         </property>
-         <item row="0" column="0">
-          <widget class="QPlainTextEdit" name="console">
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
+      </widget>
+      <widget class="QPlainTextEdit" name="consoleEdit">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
       </widget>
      </widget>
     </item>

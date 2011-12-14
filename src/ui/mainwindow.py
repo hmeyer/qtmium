@@ -6,12 +6,14 @@ Module implementing MainWindow.
 
 from PyQt4.QtGui import QMainWindow,  QFileDialog
 from PyQt4.QtCore import pyqtSignature
+from PyQt4.QtCore import Qt
 from PyQt4 import Qsci
 
 from Ui_mainwindow import Ui_MainWindow
 from OCC.Display.qtDisplay import qtViewer3d
 
 import evaluator
+import exceptions
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     """
@@ -24,7 +26,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         QMainWindow.__init__(self, parent)
         self.setupUi(self)
         self.glWidget = qtViewer3d()
-        self.splitter.addWidget(self.glWidget)
+        self.splitterH.addWidget(self.glWidget)
         self.filename = None
         self.object = None
         self.sourceEdit.setLexer(Qsci.QsciLexerPython())
@@ -40,10 +42,15 @@ result = (
     height = 40, thickness = 150, center=True) 
   - Torus(130,20).rotate(Y_axis,30)
   )''')
+        self.markerNumber = self.sourceEdit.markerDefine( Qsci.QsciScintilla.Circle)
+        self.sourceEdit.setMarkerBackgroundColor( Qt.red,  self.markerNumber )
+        self.errorMarker  = None
     
     def setup(self):
-        size = self.splitter.size().width()
-        self.splitter.setSizes([size/2,  size/2])
+        h = self.size().height()
+        self.splitterV.setSizes([h*4/5,  h/5])
+        w = self.size().width()
+        self.splitterH.setSizes([w/2,  w/2])
     
     @pyqtSignature("")
     def on_action_Compile_activated(self):
@@ -56,11 +63,35 @@ result = (
                 self.w.clear()
             def write(self, txt):
                 self.w.appendPlainText(str(txt).rstrip())
-        out = OutPutter(self.console)
-        self.object = evaluator.safeEvaluate(str( self.sourceEdit.text() ), out)
-        self.glWidget._display.EraseAll()        
-        self.glWidget._display.DisplayShape(self.object.shape,  update = True)
+        out = OutPutter(self.consoleEdit)
+        result = evaluator.safeEvaluate(str( self.sourceEdit.text() ), out)
+        self.glWidget._display.EraseAll()
+        self.object = None
+        if result:
+            import cadmium
+            if isinstance(result, cadmium.solid.Solid):
+                self.object = result
+                self.glWidget._display.DisplayShape(self.object.shape,  update = True)
+            elif isinstance(result, exceptions.SyntaxError):
+                self.displayCompileError(result)
+            else:
+                self.displayOtherError(result)
     
+    def displayCompileError(self, e):
+        d = e.args[0]
+        line = e.args[1][1]
+        col = e.args[1][2]
+        self.consoleEdit.setPlainText('Error in line {0}, column {1}: {2}'.format(line,  col, d))
+        self.errorMarker = self.sourceEdit.markerAdd(line-1, self.markerNumber)
+        self.sourceEdit.setCursorPosition(line-1,  col-1)
+
+    def displayOtherError(self, e):
+        self.consoleEdit.setPlainText(e.__class__.__name__+":"+str(e.args[0]))
+        line = e.args[-1][1]
+        self.errorMarker = self.sourceEdit.markerAdd(line-1, self.markerNumber)
+        self.sourceEdit.setCursorPosition(line-1,  0)
+
+
     @pyqtSignature("")
     def on_action_Save_activated(self):
         """
@@ -99,3 +130,12 @@ result = (
             stlname = str(QFileDialog.getSaveFileName(self, 'STL File Name',  filter='*.stl'))
             if (stlname):
                 self.object.toSTL(filename = stlname)
+    
+    @pyqtSignature("")
+    def on_sourceEdit_textChanged(self):
+        """
+        Delete all markers, when Text changed
+        """
+        if self.errorMarker:
+            self.sourceEdit.markerDeleteHandle(self.errorMarker)
+            self.errorMarker = None

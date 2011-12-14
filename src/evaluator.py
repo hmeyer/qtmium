@@ -20,6 +20,11 @@ def safeEvaluate(src, stdout=sys.__stdout__, stderr=sys.__stderr__):
     """
     function allowing the safe evaluation of untrusted python code
     """
+    try:
+        code = compile_restricted( src, '<string>', 'exec')
+    except SyntaxError as e:
+        return e
+
     class GeneralNonCollector:
         '''Redirect text to stdout'''
         def __init__(self):
@@ -38,11 +43,21 @@ def safeEvaluate(src, stdout=sys.__stdout__, stderr=sys.__stderr__):
         
     restricted_globals = dict(restricted_globals.items() + safe_cadmium().items())
 
-    code = compile_restricted( src, '<string>', 'exec')
+
     (ostdout, ostderr) = (sys.stdout,  sys.stderr)
     (sys.stdout,  sys.stderr) = (stdout, stderr)
-    exec( code ) in restricted_globals
-    (sys.stdout,  sys.stderr) = (ostdout, ostderr)
+    ex = None
+    try:
+        exec( code ) in restricted_globals
+    except (AttributeError, NameError, TypeError) as e:
+        import traceback
+        (typ, val, tb) = sys.exc_info()
+        e.args = e.args + (traceback.extract_tb(tb)[-1], )
+        ex = e
+    finally:
+        (sys.stdout,  sys.stderr) = (ostdout, ostderr)
+    if ex:
+        return ex
 
     if 'result' in restricted_globals:
         return restricted_globals['result']

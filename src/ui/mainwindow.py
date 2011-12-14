@@ -6,6 +6,7 @@ Module implementing MainWindow.
 
 from PyQt4.QtGui import QMainWindow,  QFileDialog
 from PyQt4.QtCore import pyqtSignature
+from PyQt4 import Qsci
 
 from Ui_mainwindow import Ui_MainWindow
 from OCC.Display.qtDisplay import qtViewer3d
@@ -26,6 +27,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.splitter.addWidget(self.glWidget)
         self.filename = None
         self.object = None
+        self.sourceEdit.setLexer(Qsci.QsciLexerPython())
+        self.sourceEdit.setAutoIndent(True)
+        self.sourceEdit.setBraceMatching(Qsci.QsciScintilla.SloppyBraceMatch)
+        self.sourceEdit.setIndentationGuides(True)
+        self.sourceEdit.setText(
+'''#press F8 to compile
+result = (
+  Torus(70,69) - 
+  Text('Hello World', 
+    fontpath='/usr/share/fonts/truetype/freefont/FreeSans.ttf', 
+    height = 40, thickness = 150, center=True) 
+  - Torus(130,20).rotate(Y_axis,30)
+  )''')
     
     def setup(self):
         size = self.splitter.size().width()
@@ -43,7 +57,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             def write(self, txt):
                 self.w.appendPlainText(str(txt).rstrip())
         out = OutPutter(self.console)
-        self.object = evaluator.safeEvaluate(str( self.sourceEdit.toPlainText() ), out)
+        self.object = evaluator.safeEvaluate(str( self.sourceEdit.text() ), out)
         self.glWidget._display.EraseAll()        
         self.glWidget._display.DisplayShape(self.object.shape,  update = True)
     
@@ -56,7 +70,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.on_actionSave_as_activated()
         else:
             with open(self.filename, 'w') as f:
-                f.write(str( self.sourceEdit.toPlainText() ))
+                f.write(str( self.sourceEdit.text() ))
     
     @pyqtSignature("")
     def on_actionSave_as_activated(self):
@@ -74,7 +88,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """
         self.filename = QFileDialog.getOpenFileName(self, 'Object File Name',  filter='*.py')
         with open(self.filename, 'r') as f:
-            self.sourceEdit.setPlainText( f.read() )
+            self.sourceEdit.setText( f.read() )
     
     @pyqtSignature("")
     def on_actionE_xport_STL_activated(self):

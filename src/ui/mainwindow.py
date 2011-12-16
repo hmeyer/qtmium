@@ -16,6 +16,8 @@ from os import path
 
 import evaluator
 import exceptions
+import sys
+import os
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -36,6 +38,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.errorMarker  = None
         self.setupUi(self)
         self.create_recentFileActs()
+        self.create_exampleActs()
         self.updateRecentFileActions()
         self.glWidget = qtViewer3d()
         self.splitterH.addWidget(self.glWidget)
@@ -146,9 +149,9 @@ result = (
             self.errorMarker = None
 
     @pyqtSignature("")
-    def on_open_recent_file(self):
+    def on_open_menu_file(self):
         """
-        open recent file
+        open recent/example file
         """
         action = self.sender()
         if action:
@@ -163,9 +166,38 @@ result = (
         for i in range(MAX_RECENT_FILES):
             a = QAction(self)
             a.setVisible(False)
-            QtCore.QObject.connect(a, QtCore.SIGNAL(_fromUtf8("triggered()")), self.on_open_recent_file)
+            QtCore.QObject.connect(a, QtCore.SIGNAL(_fromUtf8("triggered()")), self.on_open_menu_file)
             self.menuRecent.addAction(a)
             self.recentFileActs.append(a)
+
+    def create_exampleActs(self):
+        """
+        Create Actions to open example files
+        """
+        exdir = None
+        self.menuExamples.menuAction().setVisible(False)
+        bpath = sys.path[0] + os.sep
+        for p in ['../share/openscadpy/examples',
+            '../../share/openscadpy/examples',
+            '../../examples','../examples','examples']:
+            exdir = bpath + p
+            if os.access(exdir,  os.R_OK ):
+                break
+            else:
+                exdir = None
+        if not exdir:
+            return
+        
+        for e in sorted(os.listdir(exdir)):
+            if e[-3:] == '.py':
+                fname = exdir + os.sep + e
+                a = QAction(self)
+                QtCore.QObject.connect(a, QtCore.SIGNAL(_fromUtf8("triggered()")), self.on_open_menu_file)
+                a.setText(e)
+                a.setData(fname)
+                self.menuExamples.addAction(a)
+                self.menuExamples.menuAction().setVisible(True)
+        
 
     @pyqtSignature("")
     def updateRecentFileActions(self):
@@ -183,29 +215,29 @@ result = (
         for i in range(len(files), MAX_RECENT_FILES):
             self.recentFileActs[i].setVisible(False)
             
-        self.menuRecent.setVisible(len(files)>0)
+        self.menuRecent.menuAction().setVisible(len(files)>0)
+
+    @pyqtSignature("")
+    def updateTitle(self):
+        self.setWindowTitle('qtmium - '+path.basename(self.filename))
 
     @pyqtSignature("")
     def loadFile(self,  fname):
         """
         open Object Code
         """
-        self.filename = fname
+        self.filename = str(fname)
         with open(fname, 'r') as f:
             self.sourceEdit.setText( f.read() )
-        
-        self.setWindowFilePath(fname)
 
         settings = QtCore.QSettings()
         files = settings.value("recentFileList").toStringList()
         
         files.removeAll(fname)
-        
         files.prepend(fname);
         while len(files) > MAX_RECENT_FILES:
-            files.removeLast()
-
+            files = files[:-1]
         settings.setValue("recentFileList", files)
         settings.sync()
-        
         self.updateRecentFileActions()
+        self.updateTitle()

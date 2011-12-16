@@ -57,7 +57,7 @@ def safeEvaluate(src, stdout=sys.__stdout__, stderr=sys.__stderr__):
     ex = None
     try:
         exec( code ) in restricted_globals
-    except (AttributeError, NameError, TypeError) as e:
+    except (AttributeError, NameError, TypeError,  ImportError) as e:
         (typ, val, tb) = sys.exc_info()
         e.args = e.args + (e.args[0],  traceback.extract_tb(tb)[-1][1], -1)
         ex = e

@@ -4,16 +4,25 @@
 Module implementing MainWindow.
 """
 
-from PyQt4.QtGui import QMainWindow,  QFileDialog
-from PyQt4.QtCore import pyqtSignature
-from PyQt4.QtCore import Qt
-from PyQt4 import Qsci
+from PyQt4.QtGui import QMainWindow,  QFileDialog,  QAction
+from PyQt4.QtCore import pyqtSignature, Qt
+from PyQt4 import Qsci,  QtCore
 
 from Ui_mainwindow import Ui_MainWindow
 from OCC.Display.qtDisplay import qtViewer3d
 
+from collections import deque
+from os import path
+
 import evaluator
 import exceptions
+
+try:
+    _fromUtf8 = QtCore.QString.fromUtf8
+except AttributeError:
+    _fromUtf8 = lambda s: s
+
+MAX_RECENT_FILES = 5
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     """
@@ -24,7 +33,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         Constructor
         """
         QMainWindow.__init__(self, parent)
+        self.errorMarker  = None
         self.setupUi(self)
+        self.create_recentFileActs()
+        self.updateRecentFileActions()
         self.glWidget = qtViewer3d()
         self.splitterH.addWidget(self.glWidget)
         self.filename = None
@@ -44,7 +56,6 @@ result = (
   )''')
         self.markerNumber = self.sourceEdit.markerDefine( Qsci.QsciScintilla.Circle)
         self.sourceEdit.setMarkerBackgroundColor( Qt.red,  self.markerNumber )
-        self.errorMarker  = None
     
     def setup(self):
         h = self.size().height()
@@ -72,24 +83,20 @@ result = (
             if isinstance(result, cadmium.solid.Solid):
                 self.object = result
                 self.glWidget._display.DisplayShape(self.object.shape,  update = True)
-            elif isinstance(result, exceptions.SyntaxError):
-                self.displayCompileError(result)
             else:
-                self.displayOtherError(result)
+                self.displayError(result)
     
-    def displayCompileError(self, e):
-        d = e.args[0]
-        line = e.args[1][1]
-        col = e.args[1][2]
-        self.consoleEdit.setPlainText('Error in line {0}, column {1}: {2}'.format(line,  col, d))
+    def displayError(self, e):
+        d = e.args[-3]
+        line = e.args[-2]
         self.errorMarker = self.sourceEdit.markerAdd(line-1, self.markerNumber)
-        self.sourceEdit.setCursorPosition(line-1,  col-1)
-
-    def displayOtherError(self, e):
-        self.consoleEdit.setPlainText(e.__class__.__name__+":"+str(e.args[0]))
-        line = e.args[-1][1]
-        self.errorMarker = self.sourceEdit.markerAdd(line-1, self.markerNumber)
-        self.sourceEdit.setCursorPosition(line-1,  0)
+        col = e.args[-1]
+        if not col == -1:
+            self.consoleEdit.setPlainText('Error in line {0}, column {1}: {2}'.format(line,  col, d))
+            self.sourceEdit.setCursorPosition(line-1,  col-1)
+        else:
+            self.consoleEdit.setPlainText('Error in line {0}: {1}'.format(line,  d))
+            self.sourceEdit.setCursorPosition(line-1,  0)
 
 
     @pyqtSignature("")
@@ -117,9 +124,7 @@ result = (
         """
         Query Name, then open Object Code
         """
-        self.filename = QFileDialog.getOpenFileName(self, 'Object File Name',  filter='*.py')
-        with open(self.filename, 'r') as f:
-            self.sourceEdit.setText( f.read() )
+        self.loadFile(QFileDialog.getOpenFileName(self, 'Object File Name',  filter='*.py'))
     
     @pyqtSignature("")
     def on_actionE_xport_STL_activated(self):
@@ -139,3 +144,68 @@ result = (
         if self.errorMarker:
             self.sourceEdit.markerDeleteHandle(self.errorMarker)
             self.errorMarker = None
+
+    @pyqtSignature("")
+    def on_open_recent_file(self):
+        """
+        open recent file
+        """
+        action = self.sender()
+        if action:
+            self.loadFile( action.data().toString() )
+
+    @pyqtSignature("")
+    def create_recentFileActs(self):
+        """
+        Create Actions to open recent files
+        """
+        self.recentFileActs = deque()
+        for i in range(MAX_RECENT_FILES):
+            a = QAction(self)
+            a.setVisible(False)
+            QtCore.QObject.connect(a, QtCore.SIGNAL(_fromUtf8("triggered()")), self.on_open_recent_file)
+            self.menuRecent.addAction(a)
+            self.recentFileActs.append(a)
+
+    @pyqtSignature("")
+    def updateRecentFileActions(self):
+        """
+        Update the list of recent Files
+        """ 
+        settings = QtCore.QSettings()
+        files = settings.value("recentFileList").toStringList()
+        
+        for i,  f in enumerate(files):
+            self.recentFileActs[i].setText(path.basename(str(f)))
+            self.recentFileActs[i].setData(f)
+            self.recentFileActs[i].setVisible(True)
+        
+        for i in range(len(files), MAX_RECENT_FILES):
+            self.recentFileActs[i].setVisible(False)
+            
+        self.menuRecent.setVisible(len(files)>0)
+
+    @pyqtSignature("")
+    def loadFile(self,  fname):
+        """
+        open Object Code
+        """
+        self.filename = fname
+        with open(fname, 'r') as f:
+            self.sourceEdit.setText( f.read() )
+        
+        self.setWindowFilePath(fname)
+
+        settings = QtCore.QSettings()
+        files = settings.value("recentFileList").toStringList()
+        
+        files.removeAll(fname)
+        
+        files.prepend(fname);
+        while len(files) > MAX_RECENT_FILES:
+            files.removeLast()
+
+        settings.setValue("recentFileList", files)
+        settings.sync()
+        
+        self.updateRecentFileActions()

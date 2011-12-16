@@ -1,6 +1,8 @@
 from RestrictedPython import compile_restricted, PrintCollector, Guards
 import sys
 import cadmium
+import traceback
+import re
 
 def safe_cadmium():
     return dict(
@@ -23,6 +25,12 @@ def safeEvaluate(src, stdout=sys.__stdout__, stderr=sys.__stderr__):
     try:
         code = compile_restricted( src, '<string>', 'exec')
     except SyntaxError as e:
+        if len(e.args)==2:
+            e.args = e.args + (e.args[0],  e.args[1][1],  e.args[1][2] )
+        else:
+            m = re.search('^Line (\d+): (.*)$',  e.args[0])
+            if m:
+                e.args = e.args + (m.group(2),  int(m.group(1)),  -1)
         return e
 
     class GeneralNonCollector:
@@ -50,9 +58,8 @@ def safeEvaluate(src, stdout=sys.__stdout__, stderr=sys.__stderr__):
     try:
         exec( code ) in restricted_globals
     except (AttributeError, NameError, TypeError) as e:
-        import traceback
         (typ, val, tb) = sys.exc_info()
-        e.args = e.args + (traceback.extract_tb(tb)[-1], )
+        e.args = e.args + (e.args[0],  traceback.extract_tb(tb)[-1][1], -1)
         ex = e
     finally:
         (sys.stdout,  sys.stderr) = (ostdout, ostderr)

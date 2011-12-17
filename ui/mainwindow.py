@@ -14,7 +14,7 @@ from OCC.Display.qtDisplay import qtViewer3d
 from collections import deque
 from os import path
 
-import evaluator
+from evaluator import evaluator
 import exceptions
 import sys
 import os

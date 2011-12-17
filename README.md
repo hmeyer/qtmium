@@ -1,50 +1,27 @@
-Cadmium is a python library for Solid Modelling
+qtmium is a Python programming environment for Solid Modelling
 
-Cadmium allows you to write python code to create primitive objects (Box, Cylinder, Sphere, etc.) and apply CSG operations (Addition, Subtraction, Intersection) on them to create advanced solid models. The primitives have support for affine transformations too (translation, rotation).
+qtmium is based on Cadmium (Jayesh Salvi @jyro) and inspired by OpenSCAD (http://www.openscad.org/). It allows you to write python code to create primitive objects (Box, Cylinder, Sphere, etc.) and apply CSG operations (Addition, Subtraction, Intersection) on them to create advanced solid models. The primitives have support for affine transformations too (translation, rotation).
 
 Screenshots and examples
 ------------------------
-[http://jayesh3.github.com/cadmium/](http://jayesh3.github.com/cadmium/).
+[http://hmeyer.github.com/qtmium/](http://hmeyer.github.com/qtmium/).
 
 Typical Solid modelling code with Cadmium
 ------------------------------------------
-    from cadmium import *
-
     box = Box(x=4, y=4, z=4).rotate(Z_axis, 30)
     cyl = Cylinder(radius=2, height=4).translate(-1,0,0)
 
-    solid = box + cyl
+    result = box + cyl
 
-    solid.toSTL('solid.stl')
-
-Getting Cadmium
+Getting qtmium
 ---------------------------
 
-    git clone https://github.com/jayesh3/cadmium.git cadmium
-    cd cadmium
-    python setup.py install
-
-Getting Dependencies - PythonOCC
----------------------------------
-Cadmium depends on PythonOCC which in turn requires OpenCASCADE.
-
-The easiest way to setup PythonOCC and OpenCASCADE is to do it in Ubuntu server VM (unless you run Ubuntu natively). Although, PythonOCC includes some GUI utilities Cadmium doesn't need them, so you can use Ubuntu server VM.
-
-To install OpenCASCADE just do `apt-get install libopencascade-dev`. You can get PythonOCC from [here](http://www.pythonocc.org/download/). If you choose to build it from source [these instructions](http://code.google.com/p/pythonocc/source/browse/trunk/INSTALL) are helpful.
-
-Running example code
----------------------
-
-    python examples/<python-script> <filename.stl>
+The easiest way to setup PythonOCC and OCE is to do it in Ubuntu (or Ubuntu VM). 
+To install qtmium just do `sudo apt-add-repository ppa:hmeyer/3d;sudo apt-get update;sudo apt-get install qtmium`.
 
 Details
 --------------------------
-Cadmium is inspired by the [OpenSCAD project](http://www.openscad.org/), but it is a completely independent implementation. Here is what is different about Cadmium.
+qtmium is inspired by the [OpenSCAD project](http://www.openscad.org/) and relying heavily on [Cadmium](http://http://jayesh3.github.com/cadmium/).
 
-* Write your code in Python. No need to learn new syntax. Use your favorite python features as you do advanced calculations for solid modelling.
-* Cadmium has no GUI. It only generates STL files (other formats may be supported in future). You can view these STL files in your favorite STL viewer, on your favorite OS. Becase Cadmium has no GUI, it's very light weight and has minimal dependencies. Hence it should be portable to any platform on which you can install PythonOCC
-* All of the Cadmium code itself is written in Python, hence easy to maintain
-* Cadmium is only creates easy-to-use abstraction on top of PythonOCC. All the real work is done by [PythonOCC](http://www.pythonocc.org/) and the underlying [OpenCASCADE library](http://www.opencascade.org/).
-
-Cadmium is a work in progress. Bug reports and patches are welcome.
+qtmium is a work in progress. Bug reports and patches are welcome.
 

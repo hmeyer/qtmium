@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=qtmium
+GenericName=Python 3d modeller
+Comment=create 3d models
+Exec=qtmium
+Icon=qtmium
+Terminal=false
+Categories=Qt;Graphics;

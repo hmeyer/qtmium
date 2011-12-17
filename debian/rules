@@ -1,0 +1,13 @@
+#!/usr/bin/make -f
+
+%:
+	dh --with python2 $@
+
+override_dh_install:
+	mv debian/qtmium/usr/bin/qtmium debian/qtmium/usr/share/qtmium/main
+	
+override_dh_auto_build:
+	
+override_dh_auto_install:
+	
+

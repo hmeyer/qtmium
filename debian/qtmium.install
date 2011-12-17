@@ -1,0 +1,8 @@
+cadmium/*					/usr/share/qtmium/cadmium/
+evaluator/*					/usr/share/qtmium/evaluator/
+ui/*						/usr/share/qtmium/ui/
+examples/*					/usr/share/qtmium/examples/
+debian/qtmium.desktop		/usr/share/applications
+icons/hicolor/*				/usr/share/icons/hicolor
+icons/pixmaps/*				/usr/share/pixmaps
+bin/qtmium                /usr/bin

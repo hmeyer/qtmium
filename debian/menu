@@ -1,0 +1,3 @@
+?package(qtmium):needs="X11" section="Graphics"\
+  title="qtmium" command="/usr/bin/qtmium"\
+  icon="/usr/share/pixmaps/qtmium.xpm"

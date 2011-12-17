@@ -1,7 +1,7 @@
 Source: qtmium
 Section: graphics
 Priority: optional
-Maintainer: Henning Meyer <tutmann@gmail.com>
+Maintainer: Henning Meyer <hmeyer@gmx.eu>
 Build-Depends: debhelper (>= 7.0.50~), python, python-occ, python-qt4, pythom-restrictedpython
 Standards-Version: 3.9.2
 X-Python-Version: >= 2.4

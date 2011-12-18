@@ -1,3 +1,9 @@
+qtmium (0.2-1ubuntu1) oneiric; urgency=low
+
+  * next attempt
+
+ -- Henning Meyer <hmeyer@gmx.eu>  Sun, 18 Dec 2011 23:08:07 +0100
+
 qtmium (0.1-1) oneiric; urgency=low
 
   * Initial release

@@ -1,3 +1,4 @@
+qtmium.py			usr/share/qtmium/qtmium.py
 cadmium/*			usr/share/qtmium/cadmium/
 evaluator/*			usr/share/qtmium/evaluator/
 ui/*				usr/share/qtmium/ui/

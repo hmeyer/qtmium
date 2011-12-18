@@ -9,7 +9,7 @@ Homepage: https://hmeyer.github.com/qtmium
 
 Package: qtmium
 Architecture: all
-Depends: ${misc:Depends}, ${python:Depends}, python-qt4, python, python-occ, python-qt4, pythom-restrictedpython
+Depends: ${misc:Depends}, ${python:Depends}, python-qt4, python, python-occ, python-qt4, python-restrictedpython
 Description: Python programming environment for Solid Modelling
  qtmium is a tool, inspired by OpenSCAD built
  on top of PythonOCC and OCE, to give simple

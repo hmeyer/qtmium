@@ -1,3 +1,9 @@
+qtmium (0.3-1ubuntu2) oneiric; urgency=low
+
+  * updated paths and control 
+
+ -- Henning Meyer <hmeyer@gmx.eu>  Mon, 19 Dec 2011 00:09:47 +0100
+
 qtmium (0.3-1ubuntu1) oneiric; urgency=low
 
   * new file layout

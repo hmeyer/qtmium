@@ -3,6 +3,15 @@
 from distutils.core import setup
 import glob
 
+import os
+
+for i in os.listdir('ui'):
+	(b,e) = os.path.splitext(i)
+	if (e == '.ui'):
+		o = os.path.join('ui',i)
+		n = os.path.join('ui','Ui_'+b+'.py')
+		os.system('pyuic4 -o ' + n + ' ' + o)
+
 setup(name='qtmium',
       version='0.1',
       description='Solid modelling environment',

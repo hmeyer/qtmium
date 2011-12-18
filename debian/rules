@@ -1,13 +1,34 @@
 #!/usr/bin/make -f
 
-%:
-	dh --with python2 $@
 
-override_dh_install:
-	mv debian/qtmium/usr/bin/qtmium debian/qtmium/usr/share/qtmium/main
-	
-override_dh_auto_build:
-	
-override_dh_auto_install:
-	
+build:
 
+binary: binary-arch binary-indep
+binary-arch:
+
+binary-indep:
+	dh_testdir
+	dh_testroot
+	dh_clean
+	dh_installdirs usr/bin
+	dh_install
+	dh_installchangelogs
+	dh_installdocs README README.development README.translating CREDITS
+	dh_installmenu
+	dh_pysupport
+#	dh_installman debian/qtmium.1
+	dh_compress
+	find debian/qtmium/usr/share -type f -perm -1 -exec chmod a-x {} \;
+	dh_fixperms
+	dh_installdeb
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+clean:
+	dh_testdir
+	dh_testroot
+	find -name \*.py[co] -exec rm {} \;
+	dh_clean
+
+.PHONY: build clean binary binary-arch binary-indep

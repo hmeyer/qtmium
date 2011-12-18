@@ -2,6 +2,7 @@
 
 
 build:
+	python setup.py --help
 
 binary: binary-arch binary-indep
 binary-arch:
@@ -13,7 +14,7 @@ binary-indep:
 	dh_installdirs usr/bin
 	dh_install
 	dh_installchangelogs
-	dh_installdocs README README.development README.translating CREDITS
+#	dh_installdocs README README.development README.translating CREDITS
 	dh_installmenu
 	dh_pysupport
 #	dh_installman debian/qtmium.1

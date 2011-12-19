@@ -1,3 +1,9 @@
+qtmium (0.4-1ubuntu0) oneiric; urgency=low
+
+  * minimal readme fix
+
+ -- Henning Meyer <hmeyer@gmx.eu>  Mon, 19 Dec 2011 08:27:34 +0100
+
 qtmium (0.3-1ubuntu3) oneiric; urgency=low
 
   * new version (for testing)

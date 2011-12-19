@@ -6,7 +6,7 @@ Screenshots and examples
 ------------------------
 [http://hmeyer.github.com/qtmium/](http://hmeyer.github.com/qtmium/).
 
-Typical Solid modelling code with Cadmium
+Typical Solid modelling code with qtmium
 ------------------------------------------
     box = Box(x=4, y=4, z=4).rotate(Z_axis, 30)
     cyl = Cylinder(radius=2, height=4).translate(-1,0,0)

@@ -3,6 +3,7 @@ import sys
 import cadmium
 import traceback
 import re
+import math
 
 def safe_cadmium():
     return dict(
@@ -15,8 +16,13 @@ def safe_cadmium():
                 Wedge = cadmium.Wedge, 
                 X_axis = cadmium.X_axis, 
                 Y_axis = cadmium.Y_axis, 
-                Z_axis = cadmium.Z_axis
+                Z_axis = cadmium.Z_axis, 
                 )
+
+def inplacevar_wrapper(op, x, y):
+ 	     globs = {'x': x, 'y': y}
+ 	     exec 'x'+op+'y' in globs
+ 	     return globs['x']
 
 def safeEvaluate(src, stdout=sys.__stdout__, stderr=sys.__stderr__):
     """
@@ -47,8 +53,12 @@ def safeEvaluate(src, stdout=sys.__stdout__, stderr=sys.__stderr__):
         _print_ = GeneralNonCollector, 
         _getiter_ = list.__iter__ ,
         _write_ = Guards.full_write_guard, 
-        _getattr_ = getattr)
-        
+        _getattr_ = getattr,
+        _inplacevar_ = inplacevar_wrapper, 
+        math = math, 
+        reduce = reduce, 
+        map = map, 
+        sum = sum)
     restricted_globals = dict(restricted_globals.items() + safe_cadmium().items())
 
 

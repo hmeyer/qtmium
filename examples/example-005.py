@@ -1,15 +1,8 @@
-#!/usr/bin/python
-
 #
 # Caterpillar Chain Wheel
 # derived from OpenSCAD script from http://www.thingiverse.com/thing:8877
 #
 
-import sys
-from math import *
-sys.path.append('./src')
-
-from cadmium import *
 
 width=7
 edge=6
@@ -41,18 +34,19 @@ for i in range(4):
   holes.append(
     Cylinder(radius=drill/2, height=2*width, center=True)
       .translate(
-        0.75*(radio-5)*cos(2*pi/4*i),
-        0.75*(radio-5)*sin(2*pi/4*i),
+        0.75*(radio-5)*math.cos(2*math.pi/4*i),
+        0.75*(radio-5)*math.sin(2*math.pi/4*i),
         0)
     )
 
-star_wheel = disc - reduce(lambda x,y: x+y, holes)
+#star_wheel = disc - reduce(lambda x,y: x+y, holes)
+star_wheel = disc
+for x in holes:
+	star_wheel -= x
 
 x = Cylinder(radius=21.5/2, height=20).translate(0,0,10) + \
     Cylinder(radius=4.2, height=30, center=True)
 x.translate(0,0,3)
 
-final = star_wheel - x
+result = star_wheel - x
 
-stlfname = sys.argv[1]
-final.toSTL(stlfname)

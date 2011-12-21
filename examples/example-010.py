@@ -1,16 +1,8 @@
-#!/usr/bin/python
-
 #
 # Spoked Wheel
 # Demonstrates use of Object Oriented python for Solid modelling
 #
 
-import sys
-import math
-sys.path.append('./src')
-
-from cadmium import *
-stlfname = sys.argv[1]
 
 class Spoke(Solid):
   def __init__(self, maxr, smallr, bigr, height, ratio, center=True):
@@ -40,6 +32,5 @@ rim.rotate(Y_axis, 90)
 axel = Cylinder(r=3.5,h=3,center=True).rotate(Y_axis, 90)
 hole = Cylinder(r=2,h=3,center=True).rotate(Y_axis, 90)
 
-solid = (reduce(lambda x,y: x+y, spokes) + axel - hole) + rim
+result = (reduce(lambda x,y: x+y, spokes) + axel - hole) + rim
 
-solid.toSTL(stlfname)

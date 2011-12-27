@@ -40,9 +40,7 @@ for i in range(4):
     )
 
 #star_wheel = disc - reduce(lambda x,y: x+y, holes)
-star_wheel = disc
-for x in holes:
-	star_wheel -= x
+star_wheel = disc - Union( holes )
 
 x = Cylinder(radius=21.5/2, height=20).translate(0,0,10) + \
     Cylinder(radius=4.2, height=30, center=True)

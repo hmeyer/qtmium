@@ -244,15 +244,15 @@ class Text(Solid):
       g_zspan = g_zmax - g_zmin
 
       if self.instance:
-        g.translate(x=(self.width+g.left_side_bearing+(g_xspan/2)))
+        g.translate(x=(self.width+g.left_side_bearing+(g_xspan/2)),  inplace = True)
         ymax_target = g.bbox[3]
-        g.translate(y=(ymax_target-g_yspan/2))
+        g.translate(y=(ymax_target-g_yspan/2),  inplace = True)
 
         self.instance += g
         self.width += g.left_side_bearing+g_xspan+g.right_side_bearing
       else:
         ymax_target = g.bbox[3]
-        g.translate(y=(ymax_target-g_yspan/2))
+        g.translate(y=(ymax_target-g_yspan/2),  inplace = True)
         self.instance = g
         self.width = (g_xspan/2)+g.right_side_bearing
 
@@ -262,13 +262,13 @@ class Text(Solid):
     if width and height:
       self.scale(scaleX = width*1.0/(xmax-xmin),
         scaleY = height*1.0/(ymax-ymin),
-        scaleZ = thickness)
+        scaleZ = thickness, inplace = True)
     elif (width and not height):
       self.scale(scaleX = width*1.0/(xmax-xmin),
         scaleY = width*1.0/(xmax-xmin),
-        scaleZ = thickness)
+        scaleZ = thickness, inplace = True)
     elif (height and not width):
       self.scale(scaleX = height*1.0/(ymax-ymin),
         scaleY = height*1.0/(ymax-ymin),
-        scaleZ = thickness)
+        scaleZ = thickness, inplace = True)
 

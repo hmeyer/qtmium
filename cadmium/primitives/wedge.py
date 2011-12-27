@@ -19,5 +19,5 @@ class Wedge(Solid):
     self.instance = BRepPrimAPI_MakeWedge(dx, dy, dz, ltx)
     Solid.__init__(self, self.instance.Shape())
 
-    self.translate(delta=self.centerTranslation)
+    self.translate(delta=self.centerTranslation,  inplace = True)
     

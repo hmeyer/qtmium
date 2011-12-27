@@ -1,3 +1,9 @@
+qtmium (0.4.1-1ubuntu1) oneiric; urgency=low
+
+  * minor fixes, more working examples
+
+ -- Henning Meyer <hmeyer@gmx.eu>  Tue, 27 Dec 2011 22:02:56 +0100
+
 qtmium (0.4.1-1ubuntu0) oneiric; urgency=low
 
   * added many examples

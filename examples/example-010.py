@@ -3,7 +3,9 @@
 # Demonstrates use of Object Oriented python for Solid modelling
 #
 
+print "this one is not workable, yet"
 
+'''
 class Spoke(Solid):
   def __init__(self, maxr, smallr, bigr, height, ratio, center=True):
     short_h = ratio * height
@@ -34,3 +36,4 @@ hole = Cylinder(r=2,h=3,center=True).rotate(Y_axis, 90)
 
 result = (reduce(lambda x,y: x+y, spokes) + axel - hole) + rim
 
+'''

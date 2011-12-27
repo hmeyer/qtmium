@@ -43,21 +43,18 @@ def generate_verbose(height, radius, hole_r, border, recess, num_support):
     Cylinder(h=3, r1=radius, r2=radius-border).translate(0,0,height-3)
   ) - Cylinder(r=radius-(border*2), h=height+border).translate(0,0,-1)
 
-  shafts = None
+  shafts = []
   for i in range(num_support):
     b = Box((radius-border)*2-0.6, border*2, height) \
           .translate(-radius+border+0.4,-border,0) \
           .rotate(Z_axis,i*180/num_support)
-    if shafts:
-      shafts += b
-    else:
-      shafts = b
+    shafts.append( b )
   central_ring = Cylinder(r=hole_r+border*2, h=height)
 
   central_hole = Cylinder(r=hole_r,h=height+2)
   recess = Cylinder(r=radius-2*border, h=recess)
 
-  return (outer_rings + shafts + central_ring) - \
+  return (outer_rings + Union(shafts) + central_ring) - \
     (central_hole + recess).translate(0,0,-1)
 
 bushing = generate_compact(16, 75.0/2, 4.5, 1.56,5,3)

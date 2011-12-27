@@ -48,15 +48,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.sourceEdit.setAutoIndent(True)
         self.sourceEdit.setBraceMatching(Qsci.QsciScintilla.SloppyBraceMatch)
         self.sourceEdit.setIndentationGuides(True)
-        self.sourceEdit.setText(
-'''#press F8 to compile
-result = (
-  Torus(70,69) - 
-  Text('Hello World', 
-    fontpath='/usr/share/fonts/truetype/freefont/FreeSans.ttf', 
-    height = 40, thickness = 150, center=True) 
-  - Torus(130,20).rotate(Y_axis,30)
-  )''')
         self.markerNumber = self.sourceEdit.markerDefine( Qsci.QsciScintilla.Circle)
         self.sourceEdit.setMarkerBackgroundColor( Qt.red,  self.markerNumber )
     
@@ -65,6 +56,9 @@ result = (
         self.splitterV.setSizes([h*4/5,  h/5])
         w = self.size().width()
         self.splitterH.setSizes([w/2,  w/2])
+        self.glWidget._display.SetOrthographic(False)
+        self.glWidget._display.EnableAntiAliasing()
+        
     
     @pyqtSignature("")
     def on_action_Compile_activated(self):
@@ -112,6 +106,7 @@ result = (
         else:
             with open(self.filename, 'w') as f:
                 f.write(str( self.sourceEdit.text() ))
+                self.updateTitle()
     
     @pyqtSignature("")
     def on_actionSave_as_activated(self):
@@ -219,7 +214,8 @@ result = (
 
     @pyqtSignature("")
     def updateTitle(self):
-        self.setWindowTitle('qtmium - '+path.basename(self.filename))
+        fn = str(self.filename)
+        self.setWindowTitle('qtmium - '+path.basename(fn))
 
     @pyqtSignature("")
     def loadFile(self,  fname):

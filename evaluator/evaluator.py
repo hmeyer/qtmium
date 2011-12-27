@@ -1,4 +1,5 @@
 from RestrictedPython import compile_restricted, PrintCollector, Guards
+from operator import getitem
 import sys
 import cadmium
 import traceback
@@ -14,6 +15,7 @@ def safe_cadmium():
                 Text = cadmium.Text, 
                 Torus = cadmium.Torus, 
                 Wedge = cadmium.Wedge, 
+                Union = cadmium.Union, 
                 X_axis = cadmium.X_axis, 
                 Y_axis = cadmium.Y_axis, 
                 Z_axis = cadmium.Z_axis, 
@@ -54,7 +56,11 @@ def safeEvaluate(src, stdout=sys.__stdout__, stderr=sys.__stderr__):
         _getiter_ = list.__iter__ ,
         _write_ = Guards.full_write_guard, 
         _getattr_ = getattr,
+        _getitem_ = getitem,
         _inplacevar_ = inplacevar_wrapper, 
+        list = list, 
+        dict = dict, 
+        enumerate = enumerate, 
         math = math, 
         reduce = reduce, 
         map = map, 

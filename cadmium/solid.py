@@ -41,7 +41,7 @@ class Solid():
       self.shape = TopoDS_Shape()
 
     self.centerTranslation = [0,0,0]
-    if center: self.centralize()
+    if center: self.centralize(inplace = True)
 
   def __add__(self, other):
     '''
@@ -92,14 +92,14 @@ class Solid():
     b.Add(self.shape, box);
     return box.Get()
 
-  def centralize(self):
+  def centralize(self,  inplace = False):
     xmin, ymin, zmin, xmax, ymax, zmax = self.getBoundingBox()
     xspan = xmax - xmin
     yspan = ymax - ymin
     zspan = zmax - zmin
-    self.centerTranslation = \
+    centerTranslation = \
       ((-xspan/2.)-xmin, (-yspan/2.)-ymin, (-zspan/2.)-zmin)
-    self.translate(delta=self.centerTranslation)
+    return self.translate(delta=centerTranslation,  inplace=inplace)
 
   def _vtxkey(self, v):
     return '%.4f_%.4f_%.4f'%(v[0], v[1], v[2])
@@ -193,7 +193,7 @@ class Solid():
       open(filename, 'w').write(json.dumps({
         'vertices':self.vertices,'faces':self.faces}))
 
-  def translate(self, x=0, y=0, z=0, delta=[0,0,0]):
+  def translate(self, x=0, y=0, z=0, delta=[0,0,0],  inplace = False):
     '''
     Translate the solid.
     Either provide delta or one of x,y,z. If either x,y or z are non-zero,
@@ -215,10 +215,13 @@ class Solid():
     xform.SetTranslation(gp_Vec(delta[0], delta[1], delta[2]))
     brep = BRepBuilderAPI_Transform(self.shape, xform, False)
     brep.Build()
-    self.shape = brep.Shape()
-    return self
+    if inplace: 
+        self.shape = brep.Shape()
+        return self
+    else:
+        return Solid(brep.Shape())
 
-  def rotate(self, axis=cadmium.Z_axis, angle=0):
+  def rotate(self, axis=cadmium.Z_axis, angle=0,  inplace = False):
     '''
     Rotate the solid
 
@@ -235,10 +238,13 @@ class Solid():
       xform.SetRotation(ax, angle*math_pi/180.0);
     brep = BRepBuilderAPI_Transform(self.shape, xform, False)
     brep.Build()
-    self.shape = brep.Shape()
-    return self
+    if inplace: 
+        self.shape = brep.Shape()
+        return self
+    else:
+        return Solid(brep.Shape())
 
-  def scale(self, scale=1, scaleX=1, scaleY=1, scaleZ=1):
+  def scale(self, scale=1, scaleX=1, scaleY=1, scaleZ=1,  inplace = False):
     '''
     Scale the solid. Either provide scale parameter for uniform scaling along 
     all axis. If scale is not provided, but one of scaleX,scaleY,scaleZ is 
@@ -264,10 +270,13 @@ class Solid():
     ))
     brep = BRepBuilderAPI_GTransform(self.shape, xform, False)
     brep.Build()
-    self.shape = brep.Shape()
-    return self
+    if inplace: 
+        self.shape = brep.Shape()
+        return self
+    else:
+        return Solid(brep.Shape())
 
-  def shear(self, xy=0, xz=0, yx=0, yz=0, zx=0, zy=0):
+  def shear(self, xy=0, xz=0, yx=0, yz=0, zx=0, zy=0,  inplace = False):
     '''
     Shear the solid
 
@@ -293,8 +302,11 @@ class Solid():
     );
     brep = BRepBuilderAPI_GTransform(self.shape, gp_GTrsf(xform), False)
     brep.Build()
-    self.shape = brep.Shape()
-    return self
+    if inplace: 
+        self.shape = brep.Shape()
+        return self
+    else:
+        return Solid(brep.Shape())
 
   def toSTL(self, filename, ascii=False, deflection=0.01):
     '''

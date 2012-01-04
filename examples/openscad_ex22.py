@@ -15,13 +15,13 @@ def roundedBox(x,y=None,z=None, r=3):
 				b+= Sphere(r).translate(x,y,z)
 	for x in [-.5,.5]:
 		for y in [-.5,.5]:
-			for v in [[rx, rz, ry, X_axis],
-				[rz, ry, rx, Y_axis],
-				[ry, rx, rz, Z_axis]]:
+			for i in range(3):
+				v = [rx, rz, ry]
+				ax = [X_axis, Y_axis, Z_axis][i]
 				b+= (
-					Cylinder(r=r,h=v[2],center=True)
-					.translate(v[0]*x,v[1]*y,0)
-					.rotate(v[3], 90)
+					Cylinder(r=r,h=v[(i+2)%3],center=True)
+					.translate(v[i]*x,v[(i+1)%3]*y,0)
+					.rotate(ax, 90)
 				)
 	return b
 	

@@ -4,7 +4,7 @@
 Module implementing MainWindow.
 """
 
-from PyQt4.QtGui import QMainWindow,  QFileDialog,  QAction
+from PyQt4.QtGui import QMainWindow,  QFileDialog,  QAction,  QMessageBox
 from PyQt4.QtCore import pyqtSignature, Qt
 from PyQt4 import Qsci,  QtCore
 
@@ -43,6 +43,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.glWidget = qtViewer3d()
         self.splitterH.addWidget(self.glWidget)
         self.filename = None
+        self.changed = False
         self.object = None
         self.sourceEdit.setLexer(Qsci.QsciLexerPython())
         self.sourceEdit.setAutoIndent(True)
@@ -71,6 +72,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.w.clear()
             def write(self, txt):
                 self.w.appendPlainText(str(txt).rstrip())
+        
         out = OutPutter(self.consoleEdit)
         result = evaluator.safeEvaluate(str( self.sourceEdit.text() ), out)
         self.glWidget._display.EraseAll()
@@ -102,11 +104,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         Save Object Code
         """
         if (not self.filename):
-            self.on_actionSave_as_activated()
+            return self.on_actionSave_as_activated()
         else:
             with open(self.filename, 'w') as f:
                 f.write(str( self.sourceEdit.text() ))
+                self.changed = False
+                self.statusbar.showMessage("{0} saved".format(self.filename),  2000)
+                self.add_current_to_recent()
                 self.updateTitle()
+                return True
+        return False
     
     @pyqtSignature("")
     def on_actionSave_as_activated(self):
@@ -115,14 +122,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """
         self.filename = QFileDialog.getSaveFileName(self, 'Object File Name',  filter='*.py')
         if (self.filename):
-            self.on_action_Save_activated()
+            return self.on_action_Save_activated()
+        return False
     
     @pyqtSignature("")
     def on_action_Open_activated(self):
         """
         Query Name, then open Object Code
         """
-        self.loadFile(QFileDialog.getOpenFileName(self, 'Object File Name',  filter='*.py'))
+        if self.check_saved():
+            self.loadFile(QFileDialog.getOpenFileName(self, 'Object File Name',  filter='*.py'))
     
     @pyqtSignature("")
     def on_actionE_xport_STL_activated(self):
@@ -133,6 +142,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             stlname = str(QFileDialog.getSaveFileName(self, 'STL File Name',  filter='*.stl'))
             if (stlname):
                 self.object.toSTL(filename = stlname)
+                self.statusbar.showMessage("STL exported",  2000)
     
     @pyqtSignature("")
     def on_sourceEdit_textChanged(self):
@@ -150,7 +160,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """
         action = self.sender()
         if action:
-            self.loadFile( action.data().toString() )
+            if self.check_saved():
+                self.loadFile( action.data().toString() )
 
     @pyqtSignature("")
     def create_recentFileActs(self):
@@ -215,7 +226,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     @pyqtSignature("")
     def updateTitle(self):
         fn = str(self.filename)
-        self.setWindowTitle('qtmium - '+path.basename(fn))
+        indicator = ''
+        if self.changed: indicator = '*'
+        self.setWindowTitle('qtmium - '+path.basename(fn) + indicator)
 
     @pyqtSignature("")
     def loadFile(self,  fname):
@@ -225,15 +238,47 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.filename = str(fname)
         with open(fname, 'r') as f:
             self.sourceEdit.setText( f.read() )
-
+            self.changed = False
+            self.statusbar.showMessage("{0} loaded".format(self.filename),  2000)
+        self.add_current_to_recent()
+        self.updateTitle()
+    
+    def add_current_to_recent(self):
         settings = QtCore.QSettings()
         files = settings.value("recentFileList").toStringList()
-        
-        files.removeAll(fname)
-        files.prepend(fname);
+        files.removeAll(self.filename)
+        files.prepend(self.filename);
         while len(files) > MAX_RECENT_FILES:
             files = files[:-1]
         settings.setValue("recentFileList", files)
         settings.sync()
         self.updateRecentFileActions()
-        self.updateTitle()
+    
+    @pyqtSignature("int, int")
+    def on_sourceEdit_cursorPositionChanged(self, line, pos):
+        self.statusbar.showMessage("L:{0} C:{1}".format(line, pos),  1500)
+        return True
+
+    @pyqtSignature("")
+    def on_sourceEdit_textChanged(self):
+        if not self.changed:
+            self.changed = True
+            self.updateTitle()
+        return True
+    
+    def check_saved(self):
+        if self.changed:
+            ret = QMessageBox.warning(self,  'Application', 
+                "The Object has been modified.\nDo you want to save your changes?", 
+                QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel)
+            if ret == QMessageBox.Save:
+                return self.on_action_Save_activated()
+            elif ret == QMessageBox.Cancel:
+                return False
+        return True
+
+    def closeEvent(self,  event):
+        if self.check_saved():
+            event.accept()
+        else:
+            event.ignore()

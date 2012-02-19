@@ -10,6 +10,7 @@ Y_axis = gp_Ax1(gp_Pnt(0,0,0),gp_Dir(0,1,0))
 Z_axis = gp_Ax1(gp_Pnt(0,0,0),gp_Dir(0,0,1))
 
 import solid 
+import primitives.circle
 import primitives.cylinder
 import primitives.sphere
 import primitives.box
@@ -19,6 +20,7 @@ import primitives.torus
 import primitives.text
 import primitives.union
 
+Circle = primitives.circle.Circle
 Cylinder = primitives.cylinder.Cylinder
 Sphere = primitives.sphere.Sphere
 Box = primitives.box.Box

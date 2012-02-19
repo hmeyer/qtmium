@@ -8,6 +8,7 @@ import math
 
 def safe_cadmium():
     return dict(
+                Circle = cadmium.Circle, 
                 Box = cadmium.Box, 
                 Cone = cadmium.Cone, 
                 Cylinder = cadmium.Cylinder, 

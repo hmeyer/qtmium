@@ -52,13 +52,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.markerNumber = self.sourceEdit.markerDefine( Qsci.QsciScintilla.Circle)
         self.sourceEdit.setMarkerBackgroundColor( Qt.red,  self.markerNumber )
     
-    def setup(self):
+    def setup(self,  inputfile=''):
         h = self.size().height()
         self.splitterV.setSizes([h*4/5,  h/5])
         w = self.size().width()
         self.splitterH.setSizes([w/2,  w/2])
         self.glWidget._display.SetOrthographic(False)
         self.glWidget._display.EnableAntiAliasing()
+        if inputfile!='':
+            self.loadFile(inputfile)
         
     
     @pyqtSignature("")

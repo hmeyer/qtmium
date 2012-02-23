@@ -19,6 +19,24 @@ Getting qtmium
 The easiest way to setup PythonOCC and OCE is to do it in Ubuntu (or Ubuntu VM). 
 To install qtmium just do `sudo apt-add-repository ppa:hmeyer/3d;sudo apt-get update;sudo apt-get install qtmium`.
 
+Installing from Github:
+
+First grab the sources.
+Install dependencies:
+
+You will need Python Open Cascade - http://www.pythonocc.org/
+
+sudo apt-get install python-qt4 pyqt4-dev-tools python-qscintilla2 
+
+
+There seems to be a bug that will produce an error message when you start qtmium the first time. 
+Please run:
+python setup.py install 
+
+It will give you errors, ignore those; you can just start qtmium.py now.
+
+
+
 Details
 --------------------------
 qtmium is inspired by the [OpenSCAD project](http://www.openscad.org/) and relying heavily on [Cadmium](http://http://jayesh3.github.com/cadmium/).

@@ -21,7 +21,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Python script based CAD')
     parser.add_argument('inputfile',  nargs='?', default='')
     parser.add_argument('-x', '--export',  nargs=1,  help='export STL to file')
-    parser.add_argument('-p', '--precision',  nargs=1,  help='smallest error',  default=0.01)
+    parser.add_argument('-p', '--precision',  nargs=1,  help='smallest error',  default=[0.01])
     args = parser.parse_args()
     if args.export:
         generateSTL(args.inputfile,  args.export[0],  float(args.precision[0] ) )

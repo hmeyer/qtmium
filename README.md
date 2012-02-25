@@ -26,7 +26,7 @@ Install dependencies:
 
 You will need Python Open Cascade - http://www.pythonocc.org/
 
-`sudo apt-get install python-qt4 pyqt4-dev-tools python-qscintilla2 python-argparse`
+`sudo apt-get install python-qt4 pyqt4-dev-tools python-qscintilla2 python-argparse python-restrictedpython python-fontforge`
 
 
 There seems to be a bug that will produce an error message when you start qtmium the first time. 

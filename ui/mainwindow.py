@@ -260,7 +260,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     
     @pyqtSignature("int, int")
     def on_sourceEdit_cursorPositionChanged(self, line, pos):
-        print "L:{0} C:{1}".format(line, pos)
         self.statuslabel.setText("L:{0} C:{1}".format(line, pos))
         return True
 

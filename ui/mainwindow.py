@@ -147,15 +147,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             if (stlname):
                 self.object.toSTL(filename = stlname)
                 self.statusbar.showMessage("STL exported",  2000)
-    
-    @pyqtSignature("")
-    def on_sourceEdit_textChanged(self):
-        """
-        Delete all markers, when Text changed
-        """
-        if self.errorMarker:
-            self.sourceEdit.markerDeleteHandle(self.errorMarker)
-            self.errorMarker = None
 
     @pyqtSignature("")
     def on_open_menu_file(self):
@@ -265,11 +256,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     @pyqtSignature("")
     def on_sourceEdit_textChanged(self):
+        """
+        Delete all markers, when Text changed
+        """
+        if self.errorMarker:
+            self.sourceEdit.markerDeleteHandle(self.errorMarker)
+            self.errorMarker = None
+
         if not self.changed:
             self.changed = True
             self.updateTitle()
         return True
-    
+                  
     def check_saved(self):
         if self.changed:
             ret = QMessageBox.warning(self,  'Application', 

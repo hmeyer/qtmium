@@ -4,7 +4,7 @@
 Module implementing MainWindow.
 """
 
-from PyQt4.QtGui import QMainWindow,  QFileDialog,  QAction,  QMessageBox
+from PyQt4.QtGui import QMainWindow,  QFileDialog,  QAction,  QMessageBox,  QLabel
 from PyQt4.QtCore import pyqtSignature, Qt
 from PyQt4 import Qsci,  QtCore
 
@@ -42,6 +42,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.updateRecentFileActions()
         self.glWidget = qtViewer3d()
         self.splitterH.addWidget(self.glWidget)
+        self.statuslabel = QLabel("")
+        self.statusbar.addWidget(self.statuslabel)        
         self.filename = None
         self.changed = False
         self.object = None
@@ -52,13 +54,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.markerNumber = self.sourceEdit.markerDefine( Qsci.QsciScintilla.Circle)
         self.sourceEdit.setMarkerBackgroundColor( Qt.red,  self.markerNumber )
     
-    def setup(self):
+    def setup(self,  inputfile=''):
         h = self.size().height()
         self.splitterV.setSizes([h*4/5,  h/5])
         w = self.size().width()
         self.splitterH.setSizes([w/2,  w/2])
         self.glWidget._display.SetOrthographic(False)
         self.glWidget._display.EnableAntiAliasing()
+        if inputfile!='':
+            self.loadFile(inputfile)
         
     
     @pyqtSignature("")
@@ -143,15 +147,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             if (stlname):
                 self.object.toSTL(filename = stlname)
                 self.statusbar.showMessage("STL exported",  2000)
-    
-    @pyqtSignature("")
-    def on_sourceEdit_textChanged(self):
-        """
-        Delete all markers, when Text changed
-        """
-        if self.errorMarker:
-            self.sourceEdit.markerDeleteHandle(self.errorMarker)
-            self.errorMarker = None
 
     @pyqtSignature("")
     def on_open_menu_file(self):
@@ -256,16 +251,23 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     
     @pyqtSignature("int, int")
     def on_sourceEdit_cursorPositionChanged(self, line, pos):
-        self.statusbar.showMessage("L:{0} C:{1}".format(line, pos),  1500)
+        self.statuslabel.setText("L:{0} C:{1}".format(line, pos))
         return True
 
     @pyqtSignature("")
     def on_sourceEdit_textChanged(self):
+        """
+        Delete all markers, when Text changed
+        """
+        if self.errorMarker:
+            self.sourceEdit.markerDeleteHandle(self.errorMarker)
+            self.errorMarker = None
+
         if not self.changed:
             self.changed = True
             self.updateTitle()
         return True
-    
+                  
     def check_saved(self):
         if self.changed:
             ret = QMessageBox.warning(self,  'Application', 

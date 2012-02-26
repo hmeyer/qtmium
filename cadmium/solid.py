@@ -12,6 +12,7 @@ import json
 
 from OCC import StlAPI
 from OCC.BRepAlgoAPI import *
+from OCC.Utils.Common import boolean_fuse,  boolean_cut
 from OCC.BRepBuilderAPI import *
 from OCC.gp import *
 from OCC import Bnd, BRepBndLib
@@ -47,22 +48,26 @@ class Solid():
     '''
     **Union** with other solid.
     '''
-    union = BRepAlgoAPI_Fuse(self.shape, other.shape).Shape()
+    union = boolean_fuse(self.shape, other.shape)
     return Solid(union)
 
   def __mul__(self, other):
     '''
     **Intersect** with other solid
     '''
-    intersection = BRepAlgoAPI_Common(self.shape, other.shape).Shape()
-    return Solid(intersection)
+    intersection = BRepAlgoAPI_Common(self.shape, other.shape)
+    intersection.RefineEdges()
+    intersection.FuseEdges()
+    s = intersection.Shape()
+    intersection.Destroy()
+    return Solid(s)
 
   def __sub__(self, other):
     '''
     **Subtract** other solid from this
     '''
-    subtraction = BRepAlgoAPI_Cut(self.shape, other.shape).Shape()
-    return Solid(subtraction)
+    difference = boolean_cut(self.shape, other.shape)
+    return Solid(difference)
 
   def _triangle_is_valid(self, P1,P2,P3):
       ''' check wether a triangle is or not valid

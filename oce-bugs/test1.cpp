@@ -23,6 +23,6 @@ int main(int argc, char **argv){
     
     c1 = BRepBuilderAPI_MakeEdge2d( Geom2d_Circle( gp::OX2d(), 1 ).Circ2d() ).Shape();
     c2 = BRepBuilderAPI_MakeEdge2d( Geom2d_Circle( gp::OX2d(), 2 ).Circ2d() ).Shape();
-//    BRepAlgo_Fuse(c1,c2);
+    BRepAlgo_Fuse(c1,c2);
     return 1;
 }

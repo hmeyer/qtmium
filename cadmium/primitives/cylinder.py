@@ -10,10 +10,12 @@ from cadmium.solid import Solid
 
 class Cylinder(Solid):
   
-  def __init__(self, r=None, radius=None, r1=None, r2=None, diameter=None, d=None,  height=None, 
+  def __init__(self, r=None, radius=None, r1=None, r2=None, diameter=None, d=None, d1=None, d2=None, height=None, 
     h=None, pie=360, center=False):
     if diameter: d = diameter
     if d: r = d *0.5
+    if d1: r1 = d1*0.5
+    if d2: r2 = d2*0.5
     if radius: r=radius
     if height: h=height
     if r1 != r2:
